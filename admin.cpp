@@ -77,6 +77,6 @@ void Admin::showShopkeepers(const Dynamic_array<Shopkeeper>& shopkeeper) const {
             cout << shopkeeper[i];
         }
 }
-String Admin::getPassword() const {
+String Admin::getPassword() {
         return Person::getPassword();
 }

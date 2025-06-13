@@ -23,7 +23,7 @@ public:
     void removeShopkeeper(Dynamic_array<Shopkeeper>& shopkeeper, const String& shopkeeperId);
     void updateShopkeeper(Dynamic_array<Shopkeeper>& shopkeeper, const Shopkeeper& updatedShopkeeper);
     void showShopkeepers(const Dynamic_array<Shopkeeper>& shopkeeper) const;
-    String getPassword() const ;
+    String getPassword();
     friend ostream& operator<<(ostream& os, const Admin& obj) {
         os << static_cast<const Person&>(obj);
         return os;

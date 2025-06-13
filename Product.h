@@ -36,6 +36,20 @@ public:
     bool operator==(const Product& other) const {
         return id == other.id && name == other.name && price == other.price && quantity == other.quantity;
     }
+
+    String getName() {
+        return name.c_str();
+    }
+    String getId() {
+        return id.c_str();
+    }
+    int getQuantity()  {
+        return quantity;
+    }
+    double getPrice()  {
+        return price;
+    }
+
 };
 
 #endif // PRODUCT_H

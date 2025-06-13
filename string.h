@@ -64,6 +64,7 @@ public:
     
     String(int Var) {
         bool negative = (Var < 0);
+        int absVar = Var;
         if (Var == 0) {
             len = 1;
             cap = 2;
@@ -72,16 +73,15 @@ public:
             Cs[1] = '\0';
             return;
         }
-        
-        if (negative) Var = -Var;
-        len = int_size(Var);
+        if (negative) absVar = -Var;
+        len = int_size(absVar);
         if (negative) len++; 
         
         cap = len + 1;
         Cs = new char[cap];
         Cs[len] = '\0';
         
-        int temp_var = Var;
+        int temp_var = absVar;
         for (int i = len - 1; i >= (negative ? 1 : 0); i--) {
             int temp = temp_var % 10;
             Cs[i] = temp + '0';
@@ -91,6 +91,7 @@ public:
             Cs[0] = '-';
         }
     }
+
     String(const String& S) {
         len = S.len;
         cap = S.cap;
@@ -180,51 +181,57 @@ public:
         Cs[0] = '\0';
     }
    
-
-
     friend istream& operator>>(istream& is, String& str) {
-    str.clear();
-    int capacity = 16;
-    char* buffer = new char[capacity];
-    int length = 0;
-    char ch;
+        str.clear();
+        int capacity = 16;
+        char* buffer = new char[capacity];
+        int length = 0;
+        char ch;
 
-    // Consume leading whitespace but keep a space-only line intact
-    while (is.get(ch) && ch == '\r') {} // skip carriage return
-    if (!is) return is;
-    if (ch == '\n') {
-        buffer[length++] = '\n';
-    } else {
-        if (ch != EOF)
-            is.putback(ch);
-    }
-
-    while (is.get(ch) && ch != '\n') {
-        if (length >= capacity - 1) {
-            capacity *= 2;
-            char* new_buffer = new char[capacity];
-            for (int i = 0; i < length; i++) {
-                new_buffer[i] = buffer[i];
+        // Skip leading whitespace except newline
+        do {
+            if (!is.get(ch)) {
+                buffer[0] = '\0';
+                str.len = 0;
+                str.cap = 1;
+                str.Cs = new char[1];
+                str.Cs[0] = '\0';
+                delete[] buffer;
+                return is;
             }
-            delete[] buffer;
-            buffer = new_buffer;
+        } while (ch == '\r');
+
+        if (ch == '\n') {
+            buffer[length++] = '\n';
+        } else {
+            is.putback(ch);
         }
-        buffer[length++] = ch;
-    }
 
-    buffer[length] = '\0';
-    str.len = length;
-    str.cap = length + 1;
-    str.Cs = new char[str.cap];
-    for (int i = 0; i < length; i++) {
-        str.Cs[i] = buffer[i];
-    }
-    str.Cs[length] = '\0';
-    delete[] buffer;
-    return is;
-}
+        while (is.get(ch) && ch != '\n') {
+            if (length >= capacity - 1) {
+                capacity *= 2;
+                char* new_buffer = new char[capacity];
+                for (int i = 0; i < length; i++) {
+                    new_buffer[i] = buffer[i];
+                }
+                delete[] buffer;
+                buffer = new_buffer;
+            }
+            buffer[length++] = ch;
+        }
 
+        buffer[length] = '\0';
+        str.len = length;
+        str.cap = length + 1;
+        delete[] str.Cs;
+        str.Cs = new char[str.cap];
+        for (int i = 0; i < length; i++) {
+            str.Cs[i] = buffer[i];
+        }
+        str.Cs[length] = '\0';
+        delete[] buffer;
+        return is;
+    }
 };
-
 
 #endif // STRING_H
