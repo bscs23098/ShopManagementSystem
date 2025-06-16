@@ -23,6 +23,18 @@ public:
             <<"Country : "<<obj.Country<<endl;
         return os;
     }
+    int getHouseNo() const {
+        return HouseNo;
+    }
+    String getCity() const {
+        return City;
+    }
+    String getProvince() const {
+        return Province;
+    }
+    String getCountry() const {
+        return Country;
+    }
 };
 
 #endif

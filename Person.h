@@ -15,6 +15,12 @@ protected:
     String getPassword() const { return password; }
 public:
     String getId() const { return Id; }
+    String getName() const { return Name; }
+    int getAge() const { return Age; }
+    int getHouseNo() const { return address.getHouseNo(); }
+    String getCity() const { return address.getCity(); }
+    String getProvince() const { return address.getProvince(); }
+    String getCountry() const { return address.getCountry(); }  
     Person(){}
     Person(String id,String pass,String name,int age,Address addrss):
         Id(id),password(pass),Name(name),Age(age),address(addrss){}

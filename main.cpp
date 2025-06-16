@@ -12,14 +12,50 @@
 using namespace std;
 int main(){
 
-    Dynamic_array<Product> products;
+
+
     Dynamic_array<Shopkeeper> shopkeepers;
     Dynamic_array<Customer> customers;
-    Shopkeeper s1("SK001", "shopkeeperpass", "Shopkeeper1", 30, Address(101, "Karachi", "Sindh"));
-    shopkeepers.push(s1);
-    Customer c1("C001", "customerpass", "Customer1", 25, Address(102, "Lahore", "Punjab"));
-    customers.push(c1);
+    Dynamic_array<Product> products;
+    LoadProduct(products, "productfile.txt");
+
+    // shopkeepers.push(Shopkeeper("S001", "shopkeeperpass", "Shopkeeper1", 30, Address(101, "Lahore", "Punjab", "Pakistan")));
+    // shopkeepers.push(Shopkeeper("S002", "shopkeeperpass2", "Shopkeeper2", 35, Address(102, "Karachi", "Sindh", "Pakistan")));
+    // SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
+
+    LoadShopkeeper(shopkeepers, "shopkeeperfile.txt");
+    // for(int i = 0; i < shopkeepers.size(); i++) {
+    //     cout << shopkeepers[i].getId() << " | "
+    //          << shopkeepers[i].getName() << " | "
+    //          << shopkeepers[i].getAge() << " | "
+    //          << shopkeepers[i].getPassword() << " | "
+    //          << shopkeepers[i].getHouseNo() << " | "
+    //          << shopkeepers[i].getCity() << " | "
+    //          << shopkeepers[i].getProvince() << " | "
+    //          << shopkeepers[i].getCountry() << endl;
+    // }
+
+
+    // for (int i = 0; i < products.size(); i++) {
+    //     cout << products[i] << endl;
+    // }
+    LoadCustomer(customers, "customerfile.txt");
+    // for (int i = 0; i < customers.size(); i++) {
+    //     cout << customers[i].getId() << " | "
+    //          << customers[i].getName() << " | "
+    //          << customers[i].getAge() << " | "
+    //          << customers[i].getPassword() << " | "
+    //          << customers[i].getHouseNo() << " | "
+    //          << customers[i].getCity() << " | "
+    //          << customers[i].getProvince() << " | "
+    //          << customers[i].getCountry() << endl;
+    // }
+
+
+
+
     Admin* admin = Admin::getInstance("A001", "adminpass", "Admin", 40, Address(104, "Islamabad", "Punjab"));
+
     while (true) {
     cout <<"1 for Admin Login"<<endl;
     cout <<"2 for Shopkeeper Login"<<endl;
@@ -60,6 +96,8 @@ int main(){
                     cin >> quantity;
                     Product newProduct(id, name, price, quantity);
                     admin->addProduct(products, newProduct);
+                    SaveProduct(products, "productfile.txt");
+                    cout << "Product added successfully!" << endl;
                     break;
                 }
                 case 2: {
@@ -76,6 +114,8 @@ int main(){
                     cin >> quantity;
                     Product updatedProduct(id, name, price, quantity);
                     admin->updateProduct(products, updatedProduct);
+                    SaveProduct(products, "productfile.txt");
+                    cout << "Product updated successfully!" << endl;
                     break;
                 }
                 case 3: {
@@ -83,10 +123,12 @@ int main(){
                     cout << "Enter Product ID to Remove: ";
                     cin >> productId;
                     admin->removeProduct(products, productId);
+                    SaveProduct(products, "productfile.txt");
+                    cout << "Product removed successfully!" << endl;
                     break;
                 }
                 case 4:
-                    admin->showProducts(products);
+                   admin->showProducts(products);
                     break;
                 case 5: {
                     String id, pass, name;
@@ -112,6 +154,8 @@ int main(){
                     cin >> province;
                     Shopkeeper newShopkeeper(id, pass, name, age, Address(houseNo, city, province, country));
                     admin->addShopkeeper(shopkeepers, newShopkeeper);
+                    SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
+                    cout << "Shopkeeper added successfully!" << endl;
                     break;
                 }
                 case 6: {
@@ -119,6 +163,8 @@ int main(){
                     cout << "Enter Shopkeeper ID to Remove: ";
                     cin >> shopkeeperId;
                     admin->removeShopkeeper(shopkeepers, shopkeeperId);
+                    SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
+                    cout << "Shopkeeper removed successfully!" << endl;
                     break;
                 }
                 case 7: {
@@ -141,6 +187,8 @@ int main(){
                     cin >> province;
                     Shopkeeper updatedShopkeeper(id, pass, name, age, Address(houseNo, city, province, country));
                     admin->updateShopkeeper(shopkeepers, updatedShopkeeper);
+                    SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
+                    cout << "Shopkeeper updated successfully!" << endl;
                     break;
                 }
                 case 8:
@@ -160,6 +208,7 @@ int main(){
         cout << "Enter Shopkeeper Password: ";
         String password;
         cin >> password;
+
        for(int i=0;i<shopkeepers.size();i++){
            if(shopkeepers[i].getPassword() == password){
                cout << "Shopkeeper Login Successful!" << endl;
@@ -185,6 +234,7 @@ int main(){
                        cin >> quantity;
                        Product newProduct(id, name, price, quantity);
                        shopkeepers[i].addProduct(products,newProduct);
+                        SaveProduct(products, "productfile.txt");
                        cout << "Product added successfully!" << endl;
                        break;
                    }
@@ -202,6 +252,7 @@ int main(){
                        cin >> quantity;
                        Product updatedProduct(id, name, price, quantity);
                        shopkeepers[i].updateProduct(products,updatedProduct);
+                       SaveProduct(products, "productfile.txt");
                        break;
                    }
                    case 3: {
@@ -209,6 +260,7 @@ int main(){
                        cout << "Enter Product ID to Remove: ";
                        cin >> productId;
                        shopkeepers[i].removeProduct(products,productId);
+                        SaveProduct(products, "productfile.txt");
                        break;
                    }
                    case 4:
@@ -226,7 +278,6 @@ int main(){
         cin >> customerChoice;
         cin.ignore();
         if (customerChoice == 1) {
-            // Customer login
             String id;
             cout << "Enter Customer ID: ";
             cin >> id;
@@ -260,6 +311,7 @@ int main(){
                             break;
                         }
                         case 2: {
+                            customers[i].showPurchasedProducts();
                             String productId;
                             cout << "Enter Product ID to Remove: ";
                             cin >> productId;
@@ -286,6 +338,7 @@ int main(){
         cin >> name;
         cout << "Enter Customer Age: ";
         cin >> age;
+        cin.ignore(); 
         cout << "Enter Customer Password: ";
         cin >> password;
         Address address;
@@ -313,6 +366,7 @@ int main(){
         }
         if (!idExists) {
             customers.push(newCustomer);
+            SaveCustomer(customers, "customerfile.txt");
             cout << "Customer Registration Successful!" << endl;
         }
     }
@@ -332,7 +386,3 @@ int main(){
 }
     return 0;
 }
-
-
-
-

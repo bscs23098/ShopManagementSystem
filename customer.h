@@ -71,6 +71,28 @@ public:
         // Destructor
         purchasedProducts.clear();
     }
+
+    String getId() const {
+        return Person::getId();
+    }
+    String getName() const {
+        return Person::getName();
+    }
+    int getAge() const {
+        return Person::getAge();
+    }
+    int getHouseNo() const {
+        return Person::getHouseNo();
+    }
+    String getCity() const {
+        return Person::getCity();
+    }
+    String getProvince() const {
+        return Person::getProvince();
+    }
+    String getCountry() const {
+        return Person::getCountry();
+    }
     
 };
 
