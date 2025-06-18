@@ -145,13 +145,15 @@ public:
     int capacity() const {
         return cap;
     }
-    bool operator==(const String& M) const {
-        if (len != M.len) return false;
+    
+    bool operator==(const String& S) const {
+        if (len != S.len) return false;
         for (int i = 0; i < len; i++) {
-            if (Cs[i] != M.Cs[i]) return false;
+            if (Cs[i] != S.Cs[i]) return false;
         }
         return true;
     }
+
     char operator[](int i) const {
         if (i < 0 || i >= len) {
             cout << "Index out of range!" << endl;

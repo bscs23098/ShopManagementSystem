@@ -8,6 +8,7 @@
 #include"Admin.h"
 #include"Shopkeeper.h"
 #include"functions.h"
+#include<string>
 #include<fstream>
 using namespace std;
 int main(){
@@ -52,6 +53,16 @@ int main(){
     // }
 
 
+    // String productId;
+    // cout << "Enter Product ID to check if it exists: ";
+    // cin >> productId;
+    // Product product(productId, "Sample Product", 100.0, 50);
+    // for (int i = 0; i < products.size(); i++) {
+    //     if(products[i].getId() == product.getId()) {
+    //         cout<<"Product already exists with ID: " << products[i].getId() << endl;
+    //     }
+    // }
+
 
 
     Admin* admin = Admin::getInstance("A001", "adminpass", "Admin", 40, Address(104, "Islamabad", "Punjab"));
@@ -63,9 +74,9 @@ int main(){
     cout <<"Enter your choice: ";
     int choice;
     cin >> choice;
+    cin.ignore(); 
     if (choice == 1) {
         cout<<"Enter Admin Password: ";
-        cin.ignore();
         String password;
         cin >> password;
         if (password == admin->getPassword()) {
@@ -81,6 +92,7 @@ int main(){
             cout << "8. Show Shopkeepers" << endl;
             cout << "Enter your choice: ";
             cin >> adminChoice;
+            cin.ignore();
             switch (adminChoice) {
                 case 1: {
                     String id, name;
@@ -92,8 +104,10 @@ int main(){
                     cin >> name;
                     cout << "Enter Product Price: ";
                     cin >> price;
+                    cin.ignore();
                     cout << "Enter Product Quantity: ";
                     cin >> quantity;
+                    cin.ignore();
                     Product newProduct(id, name, price, quantity);
                     admin->addProduct(products, newProduct);
                     SaveProduct(products, "productfile.txt");
@@ -101,22 +115,38 @@ int main(){
                     break;
                 }
                 case 2: {
-                    String id, name;
-                    double price;
-                    int quantity;
+                    admin->showProducts(products);
+                    String id;
                     cout << "Enter Product ID to Update: ";
                     cin >> id;
-                    cout << "Enter New Product Name: ";
-                    cin >> name;
-                    cout << "Enter New Product Price: ";
-                    cin >> price;
-                    cout << "Enter New Product Quantity: ";
-                    cin >> quantity;
-                    Product updatedProduct(id, name, price, quantity);
-                    admin->updateProduct(products, updatedProduct);
-                    SaveProduct(products, "productfile.txt");
-                    cout << "Product updated successfully!" << endl;
-                    break;
+                    bool found = false;
+                    for(int i = 0; i < products.size(); i++) {
+                        if (products[i].getId() == id) {
+                            found = true;
+                            cout << "Product found: " << products[i] << endl;
+                            String name;
+                            double price;
+                            int quantity;
+                            cout << "Enter New Product Name: ";
+                            cin >> name;
+                            cout << "Enter New Product Price: ";
+                            cin >> price;
+                            cin.ignore();
+                            cout << "Enter New Product Quantity: ";
+                            cin >> quantity;
+                            cin.ignore();
+                            Product updatedProduct(id, name, price, quantity);
+                            products[i] = updatedProduct;
+                            cout << "Product updated: " << updatedProduct.getId() << endl;
+                            SaveProduct(products, "productfile.txt");
+                            cout << "Product updated successfully!" << endl;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        cout << "Product with ID " << id << " not found!" << endl;
+                    }
+                
                 }
                 case 3: {
                     String productId;
@@ -124,7 +154,6 @@ int main(){
                     cin >> productId;
                     admin->removeProduct(products, productId);
                     SaveProduct(products, "productfile.txt");
-                    cout << "Product removed successfully!" << endl;
                     break;
                 }
                 case 4:
@@ -134,24 +163,24 @@ int main(){
                     String id, pass, name;
                     int age, houseNo;
                     String city, province, country = "Pakistan";
-                    
                     cout << "Enter Shopkeeper ID: ";
                     cin >> id;
-                    
                     cout << "Enter Shopkeeper Password: ";
                     cin >> pass;
-
                     cout << "Enter Shopkeeper Name: ";
                     cin >> name;
-
                     cout << "Enter Shopkeeper Age: ";
                     cin >> age;
+                    cin.ignore();
                     cout << "Enter Shopkeeper House No: ";
                     cin >> houseNo;
+                    cin.ignore();
                     cout << "Enter Shopkeeper City: ";
                     cin >> city;
                     cout << "Enter Shopkeeper Province: ";
                     cin >> province;
+                    cout << "Enter Shopkeeper Country: ";
+                    cin >> country;
                     Shopkeeper newShopkeeper(id, pass, name, age, Address(houseNo, city, province, country));
                     admin->addShopkeeper(shopkeepers, newShopkeeper);
                     SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
@@ -179,12 +208,16 @@ int main(){
                     cin >> name;
                     cout << "Enter New Shopkeeper Age: ";
                     cin >> age;
+                    cin.ignore();
                     cout << "Enter New Shopkeeper House No: ";
                     cin >> houseNo;
+                    cin.ignore();
                     cout << "Enter New Shopkeeper City: ";
                     cin >> city;
                     cout << "Enter New Shopkeeper Province: ";
                     cin >> province;
+                    cout << "Enter New Shopkeeper Country: ";
+                    cin >> country;
                     Shopkeeper updatedShopkeeper(id, pass, name, age, Address(houseNo, city, province, country));
                     admin->updateShopkeeper(shopkeepers, updatedShopkeeper);
                     SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
@@ -219,6 +252,7 @@ int main(){
                cout << "4. Show Products" << endl;
                cout << "Enter your choice: ";
                cin >> shopkeeperChoice;
+               cin.ignore();
                switch (shopkeeperChoice) {
                    case 1: {
                        String id, name;
@@ -230,8 +264,10 @@ int main(){
                        cin >> name;
                        cout << "Enter Product Price: ";
                        cin >> price;
+                       cin.ignore();
                        cout << "Enter Product Quantity: ";
                        cin >> quantity;
+                       cin.ignore();
                        Product newProduct(id, name, price, quantity);
                        shopkeepers[i].addProduct(products,newProduct);
                         SaveProduct(products, "productfile.txt");
@@ -248,8 +284,10 @@ int main(){
                        cin >> name;
                        cout << "Enter New Product Price: ";
                        cin >> price;
+                       cin.ignore();
                        cout << "Enter New Product Quantity: ";
                        cin >> quantity;
+                        cin.ignore();
                        Product updatedProduct(id, name, price, quantity);
                        shopkeepers[i].updateProduct(products,updatedProduct);
                        SaveProduct(products, "productfile.txt");
@@ -293,6 +331,7 @@ int main(){
                     cout << "3. Show Purchased Products" << endl;
                     cout << "Enter your choice: ";
                     cin >> customerAction;
+                    cin.ignore();
                     switch (customerAction) {
                         case 1: {
                             String productId;

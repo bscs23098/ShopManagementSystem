@@ -19,6 +19,20 @@ public:
     bool available() const {
         return quantity > 0;
     }
+    Product operator = (const Product& other) {
+        if (this != &other) {
+            id = other.id;
+            name = other.name;
+            price = other.price;
+            quantity = other.quantity;
+        }
+        return *this;
+    }
+
+    bool operator == (const String& otherId) const {
+        return id == otherId;
+    }
+
     friend ostream& operator<<(ostream& os, const Product& obj) {
         os << "Product ID: " << obj.id <<" --- "
           << "Name: " << obj.name << " --- "
@@ -49,6 +63,8 @@ public:
     double getPrice()  {
         return price;
     }
+
+
 
 };
 

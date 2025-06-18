@@ -41,9 +41,6 @@ void Admin::showProducts(Dynamic_array<Product>& products){
     }
 }
 
-
-
-
 void Admin::updateShopkeeper(Dynamic_array<Shopkeeper>& shopkeeper, const Shopkeeper& updatedShopkeeper) {
     for (int i = 0; i < shopkeeper.size(); i++) {
         if (shopkeeper[i].getId() == updatedShopkeeper.getId()) {
