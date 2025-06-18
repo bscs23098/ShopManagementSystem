@@ -1,0 +1,11 @@
+2025-06-18 17:55:02 [INFO] Products loaded from file.
+2025-06-18 17:55:02 [INFO] Shopkeepers loaded from file.
+2025-06-18 17:55:02 [INFO] Customers loaded from file.
+2025-06-18 17:55:02 [INFO] Admin instance created.
+2025-06-18 18:13:21 [INFO] Products loaded from file.
+2025-06-18 18:13:21 [INFO] Shopkeepers loaded from file.
+2025-06-18 18:13:21 [INFO] Customers loaded from file.
+2025-06-18 18:13:21 [INFO] Admin instance created.
+2025-06-18 18:13:27 [INFO] Admin login successful.
+2025-06-18 18:13:46 [INFO] Product updated: 
+2025-06-18 18:14:00 [WARNING] Product not found during removal.

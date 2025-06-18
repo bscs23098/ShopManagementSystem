@@ -10,21 +10,25 @@
 #include"functions.h"
 #include<string>
 #include<fstream>
+#include "log.h"
 using namespace std;
 int main(){
 
-
+    Logger::SetLogFile("mylog.txt");
 
     Dynamic_array<Shopkeeper> shopkeepers;
     Dynamic_array<Customer> customers;
     Dynamic_array<Product> products;
     LoadProduct(products, "productfile.txt");
+    Logger::Log("Products loaded from file.", Logger::INFO);
+
 
     // shopkeepers.push(Shopkeeper("S001", "shopkeeperpass", "Shopkeeper1", 30, Address(101, "Lahore", "Punjab", "Pakistan")));
     // shopkeepers.push(Shopkeeper("S002", "shopkeeperpass2", "Shopkeeper2", 35, Address(102, "Karachi", "Sindh", "Pakistan")));
     // SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
 
     LoadShopkeeper(shopkeepers, "shopkeeperfile.txt");
+    Logger::Log("Shopkeepers loaded from file.", Logger::INFO);
     // for(int i = 0; i < shopkeepers.size(); i++) {
     //     cout << shopkeepers[i].getId() << " | "
     //          << shopkeepers[i].getName() << " | "
@@ -41,6 +45,7 @@ int main(){
     //     cout << products[i] << endl;
     // }
     LoadCustomer(customers, "customerfile.txt");
+    Logger::Log("Customers loaded from file.", Logger::INFO);
     // for (int i = 0; i < customers.size(); i++) {
     //     cout << customers[i].getId() << " | "
     //          << customers[i].getName() << " | "
@@ -66,7 +71,7 @@ int main(){
 
 
     Admin* admin = Admin::getInstance("A001", "adminpass", "Admin", 40, Address(104, "Islamabad", "Punjab"));
-
+    Logger::Log("Admin instance created.", Logger::INFO);
     while (true) {
     cout <<"1 for Admin Login"<<endl;
     cout <<"2 for Shopkeeper Login"<<endl;
@@ -81,6 +86,7 @@ int main(){
         cin >> password;
         if (password == admin->getPassword()) {
             cout << "Admin Login Successful!" << endl;
+            Logger::Log("Admin login successful.", Logger::INFO);
             int adminChoice;
             cout << "1. Add Product" << endl;
             cout << "2. Update Product" << endl;    
@@ -110,6 +116,7 @@ int main(){
                     cin.ignore();
                     Product newProduct(id, name, price, quantity);
                     admin->addProduct(products, newProduct);
+                    Logger::Log("Product added: ", Logger::INFO);
                     SaveProduct(products, "productfile.txt");
                     cout << "Product added successfully!" << endl;
                     break;
@@ -138,6 +145,7 @@ int main(){
                             Product updatedProduct(id, name, price, quantity);
                             products[i] = updatedProduct;
                             cout << "Product updated: " << updatedProduct.getId() << endl;
+                            Logger::Log("Product updated: ", Logger::INFO);
                             SaveProduct(products, "productfile.txt");
                             cout << "Product updated successfully!" << endl;
                             break;
@@ -145,6 +153,7 @@ int main(){
                     }
                     if (!found) {
                         cout << "Product with ID " << id << " not found!" << endl;
+                        Logger::Log("Product not found during update.", Logger::WARNING);
                     }
                 
                 }
@@ -152,13 +161,27 @@ int main(){
                     String productId;
                     cout << "Enter Product ID to Remove: ";
                     cin >> productId;
-                    admin->removeProduct(products, productId);
-                    SaveProduct(products, "productfile.txt");
+                    bool found = false;
+                    for(int i = 0; i < products.size(); i++) {
+                        if (products[i].getId() == productId) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        admin->removeProduct(products, productId);
+                        Logger::Log("Product removed ", Logger::INFO);
+                        SaveProduct(products, "productfile.txt");
+                    } else {
+                        cout << "Product with ID " << productId << " not found!" << endl;
+                        Logger::Log("Product not found during removal.", Logger::WARNING);
+                    }
                     break;
                 }
                 case 4:
-                   admin->showProducts(products);
-                    break;
+                  { admin->showProducts(products);
+                    Logger::Log("Products displayed.", Logger::INFO);
+                    break;}
                 case 5: {
                     String id, pass, name;
                     int age, houseNo;
@@ -183,6 +206,7 @@ int main(){
                     cin >> country;
                     Shopkeeper newShopkeeper(id, pass, name, age, Address(houseNo, city, province, country));
                     admin->addShopkeeper(shopkeepers, newShopkeeper);
+                    Logger::Log("Shopkeeper added: ", Logger::INFO);
                     SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
                     cout << "Shopkeeper added successfully!" << endl;
                     break;
@@ -191,9 +215,21 @@ int main(){
                     String shopkeeperId;
                     cout << "Enter Shopkeeper ID to Remove: ";
                     cin >> shopkeeperId;
-                    admin->removeShopkeeper(shopkeepers, shopkeeperId);
-                    SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
-                    cout << "Shopkeeper removed successfully!" << endl;
+                    bool found = false;
+                    for(int i = 0; i < shopkeepers.size(); i++) {
+                        if (shopkeepers[i].getId() == shopkeeperId) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        admin->removeShopkeeper(shopkeepers, shopkeeperId);
+                        SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
+                        cout << "Shopkeeper removed successfully!" << endl;
+                    } else {
+                        cout << "Shopkeeper with ID " << shopkeeperId << " not found!" << endl;
+                        Logger::Log("Shopkeeper not found during removal.", Logger::WARNING);
+                    }
                     break;
                 }
                 case 7: {
@@ -219,19 +255,35 @@ int main(){
                     cout << "Enter New Shopkeeper Country: ";
                     cin >> country;
                     Shopkeeper updatedShopkeeper(id, pass, name, age, Address(houseNo, city, province, country));
+                    bool found = false;
+                    for(int i = 0; i < shopkeepers.size(); i++) {
+                        if (shopkeepers[i].getId() == id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        cout << "Shopkeeper with ID " << id << " not found!" << endl;
+                        Logger::Log("Shopkeeper  not found during update.", Logger::WARNING);
+                        break;
+                    }
                     admin->updateShopkeeper(shopkeepers, updatedShopkeeper);
                     SaveShopkeeper(shopkeepers, "shopkeeperfile.txt");
+                    Logger::Log("Shopkeeper updated ", Logger::INFO);
                     cout << "Shopkeeper updated successfully!" << endl;
                     break;
                 }
                 case 8:
-                    admin->showShopkeepers(shopkeepers);
-                    break;
+                    {admin->showShopkeepers(shopkeepers);
+                    Logger::Log("Shopkeepers displayed.", Logger::INFO);
+                    break;}
                 default:
-                    cout << "Invalid choice!" << endl;
+                   { cout << "Invalid choice!" << endl;
+                    Logger::Log("Invalid admin choice ", Logger::WARNING);}
             }
         } else {
             cout << "Invalid Admin Password!" << endl;
+            Logger::Log("Invalid admin password entered.", Logger::ERROR);
         }
 
     } else if (choice == 2) {
@@ -245,6 +297,7 @@ int main(){
        for(int i=0;i<shopkeepers.size();i++){
            if(shopkeepers[i].getPassword() == password){
                cout << "Shopkeeper Login Successful!" << endl;
+                Logger::Log("Shopkeeper login successful: ", Logger::INFO);
                int shopkeeperChoice;
                cout << "1. Add Product" << endl;
                cout << "2. Update Product" << endl;
@@ -269,11 +322,27 @@ int main(){
                        cin >> quantity;
                        cin.ignore();
                        Product newProduct(id, name, price, quantity);
+                          bool idExists = false;
+                     for (int j = 0; j < products.size(); j++) {
+                        if (products[j].getId() == newProduct.getId()) {
+                            cout << "Product with ID  already exists!" << endl;
+                            idExists = true;
+                            break;
+                        }
+                    }
+                   if (!idExists) {
+                        Logger::Log("Adding new product: ", Logger::INFO);
                        shopkeepers[i].addProduct(products,newProduct);
                         SaveProduct(products, "productfile.txt");
                        cout << "Product added successfully!" << endl;
                        break;
                    }
+                   else {
+                       cout << "Product with ID " << newProduct.getId() << " already exists!" << endl;
+                       Logger::Log("Product  already exists during addition.", Logger::WARNING);
+                       break;
+                   }
+                }
                    case 2: {
                        String id, name;
                        double price;
@@ -288,24 +357,54 @@ int main(){
                        cout << "Enter New Product Quantity: ";
                        cin >> quantity;
                         cin.ignore();
+                     bool found = false;
+                     for(int j = 0; j < products.size(); j++) {
+                        if (products[j].getId() == id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                   if (!found) {
                        Product updatedProduct(id, name, price, quantity);
                        shopkeepers[i].updateProduct(products,updatedProduct);
+                       Logger::Log("Product updated: ", Logger::INFO);
                        SaveProduct(products, "productfile.txt");
-                       break;
+                       break;}
+                    else {
+                        cout << "Product with ID " << id << " not found!" << endl;
+                        Logger::Log("Product not found during update.", Logger::WARNING);
+                        break;
                    }
+                }
                    case 3: {
                        String productId;
                        cout << "Enter Product ID to Remove: ";
                        cin >> productId;
+                     bool found = false;
+                        for(int j = 0; j < products.size(); j++) {
+                            if (products[j].getId() == productId) {
+                                found = true;
+                                break;
+                            }
+                        }
+                   if (!found) {
+                       cout << "Product with ID " << productId << " not found!" << endl;
+                       Logger::Log("Product  not found during removal.", Logger::WARNING);
+                       break;
+                   } else {
                        shopkeepers[i].removeProduct(products,productId);
+                          Logger::Log("Product removed ", Logger::INFO);
                         SaveProduct(products, "productfile.txt");
                        break;
                    }
+                   }
                    case 4:
-                       shopkeepers[i].showProducts(products);
-                       break;
+                       {shopkeepers[i].showProducts(products);
+                          Logger::Log("Products displayed by shopkeeper: ", Logger::INFO);
+                       break;}
                    default:
-                       cout << "Invalid choice!" << endl;
+                       {cout << "Invalid choice!" << endl;
+                          Logger::Log("Invalid shopkeeper choice: ", Logger::WARNING);}
                }
                break;
            }
@@ -316,6 +415,7 @@ int main(){
         cin >> customerChoice;
         cin.ignore();
         if (customerChoice == 1) {
+            Logger::Log("Customer login initiated.", Logger::INFO);
             String id;
             cout << "Enter Customer ID: ";
             cin >> id;
@@ -324,6 +424,7 @@ int main(){
             cin >> password;
             for (int i = 0; i < customers.size(); i++) {
                 if (customers[i].getPassword() == password && customers[i].getId() == id) {
+                    Logger::Log("Customer login successful: " , Logger::INFO);
                     cout << "Customer Login Successful!" << endl;
                     int customerAction;
                     cout << "1. Add Product to Purchased Products" << endl;
@@ -343,6 +444,7 @@ int main(){
                                     cout << "Enter Quantity: ";
                                     cin >> quantity;
                                     customers[i].addProduct(products[j], quantity);
+                                    Logger::Log("Product added to purchased products: " , Logger::INFO);
                                     cout << "Product added to purchased products!" << endl;
                                     break;
                                 }
@@ -355,20 +457,24 @@ int main(){
                             cout << "Enter Product ID to Remove: ";
                             cin >> productId;
                             customers[i].removeProduct(productId);
+                            Logger::Log("Product removed from purchased products: ", Logger::INFO);
                             break;
                         }
                         case 3:
-                            customers[i].showPurchasedProducts();
+                            {customers[i].showPurchasedProducts();
                             customers[i].bill();
-                            break;
+                            Logger::Log("Purchased products displayed for customer: ", Logger::INFO);
+                            break;}
                         default:
-                            cout << "Invalid choice!" << endl;
+                            {cout << "Invalid choice!" << endl;
+                            Logger::Log("Invalid customer action choice: ", Logger::WARNING);}
                     }
                     break;
             }
         }
     }  
     else if (customerChoice == 2) {
+        Logger::Log("Customer registration initiated.", Logger::INFO);
         String id, name, password;
         int age;
         cout << "Enter Customer ID: ";
@@ -400,6 +506,7 @@ int main(){
             if (customers[i].getId() == id) {
                 cout << "Customer ID already exists!" << endl;
                 idExists = true;
+                Logger::Log("Customer ID already exists: " , Logger::WARNING);
                 break;
             }
         }
@@ -407,6 +514,7 @@ int main(){
             customers.push(newCustomer);
             SaveCustomer(customers, "customerfile.txt");
             cout << "Customer Registration Successful!" << endl;
+            Logger::Log("Customer registered: ", Logger::INFO);
         }
     }
     else {
